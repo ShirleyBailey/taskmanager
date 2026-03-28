@@ -6,6 +6,7 @@ import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import com.example.taskmanager.dto.UpdateStatusRequest
+import com.example.taskmanager.exception.TaskNotFoundException
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -18,6 +19,10 @@ class TaskController(private val service: TaskService) {
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): Mono<TaskResponse> =
         service.getById(id)
+    @GetMapping("/test-error")
+    fun testError(): Mono<String> {
+        return Mono.error(TaskNotFoundException(999))
+    }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): Mono<Void> =

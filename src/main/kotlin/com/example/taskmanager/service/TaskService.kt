@@ -7,6 +7,8 @@ import com.example.taskmanager.repository.TaskRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
+import com.example.taskmanager.exception.TaskNotFoundException
+import reactor.core.scheduler.Schedulers
 
 @Service
 class TaskService(private val repository: TaskRepository) {
@@ -22,17 +24,42 @@ class TaskService(private val repository: TaskRepository) {
 
     fun getById(id: Long): Mono<TaskResponse> {
         return Mono.fromCallable {
-            repository.findById(id) ?: throw RuntimeException("Not found")
-        }.map { it.toResponse() }
+            repository.findById(id)
+        }
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap {
+                if (it == null) {
+                    Mono.error(TaskNotFoundException(id))
+                } else {
+                    Mono.just(it.toResponse())
+                }
+            }
     }
 
-    fun delete(id: Long): Mono<Void> =
-        Mono.fromRunnable { repository.deleteById(id) }
+    fun delete(id: Long): Mono<Void> {
+        return Mono.fromCallable {
+            val task = repository.findById(id)
+            if (task == null) {
+                throw TaskNotFoundException(id)
+            }
+            repository.deleteById(id)
+        }
+            .subscribeOn(Schedulers.boundedElastic())
+            .then()
+    }
 
     fun updateStatus(id: Long, status: TaskStatus): Mono<TaskResponse> {
         return Mono.fromCallable {
             repository.updateStatus(id, status)
-                ?: throw RuntimeException("Not found")
-        }.map { it.toResponse() }
+        }
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap {
+                if (it == null) {
+                    Mono.error(TaskNotFoundException(id))
+                } else {
+                    Mono.just(it.toResponse())
+                }
+            }
     }
 }
+
