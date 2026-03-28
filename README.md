@@ -2,18 +2,17 @@
 
 ## 📌 Overview
 
-This project is a RESTful task management service built with Kotlin and Spring Boot.
-
-It supports creating, retrieving, updating, deleting tasks, and listing tasks with pagination and filtering.
+A simple RESTful task management service built with Kotlin and Spring Boot.
+It supports creating, retrieving, updating, and deleting tasks with reactive service handling.
 
 ---
 
 ## 🛠 Tech Stack
 
 * Kotlin
-* Spring Boot (WebFlux)
-* Reactor (Mono, Flux)
-* JdbcClient
+* Spring Boot 3
+* WebFlux (Project Reactor)
+* JdbcClient (No ORM / JPA)
 * H2 Database
 * Gradle
 
@@ -21,35 +20,17 @@ It supports creating, retrieving, updating, deleting tasks, and listing tasks wi
 
 ## 🚀 Features
 
-### ✅ Task Management
-
-* Create a task
-* Get task by ID
-* Delete a task
-* Update task status
-
-### ✅ Advanced
-
-* Pagination (`page`, `size`)
-* Filtering by status
-* Sorting by `createdAt DESC`
-* Validation (title length, not blank)
-* Global exception handling
+* Create Task
+* Get Task by ID
+* Get Tasks (Pagination + Filtering)
+* Update Task Status
+* Delete Task
 
 ---
 
-## 📂 Project Structure
+## 📂 Architecture
 
-```
-src/main/kotlin
- ├── controller
- ├── service
- ├── repository
- ├── model
- ├── dto
- ├── exception
- └── config
-```
+controller → service → repository
 
 ---
 
@@ -59,41 +40,9 @@ src/main/kotlin
 ./gradlew bootRun
 ```
 
-Server runs on:
-
-```
-http://localhost:8082
-```
-
 ---
 
-## 📡 API Endpoints
-
-### 🔹 Create Task
-
-POST /api/tasks
-
-### 🔹 Get Task by ID
-
-GET /api/tasks/{id}
-
-### 🔹 Get Tasks (Pagination + Filter)
-
-GET /api/tasks?page=0&size=10&status=NEW
-
-### 🔹 Update Task Status
-
-PATCH /api/tasks/{id}/status
-
-### 🔹 Delete Task
-
-DELETE /api/tasks/{id}
-
----
-
-## 🧪 Testing
-
-Run tests:
+## 🧪 Run Tests
 
 ```bash
 ./gradlew test
@@ -101,14 +50,65 @@ Run tests:
 
 ---
 
-## 💡 Notes
+## 📡 API Endpoints
 
-* Uses JdbcClient with native SQL (no ORM)
-* Reactive service layer with Mono/Flux
-* Blocking DB calls handled via boundedElastic scheduler
+### Create Task
+
+POST /api/tasks
+
+Request:
+
+```json
+{
+  "title": "Prepare report",
+  "description": "Monthly financial report"
+}
+```
 
 ---
 
-## 👨‍💻 Author
+### Get Task by ID
 
-* Shirley Bailey
+GET /api/tasks/{id}
+
+---
+
+### Get Tasks (Pagination + Filtering)
+
+GET /api/tasks?page=0&size=10&status=NEW
+
+---
+
+### Update Task Status
+
+PATCH /api/tasks/{id}/status
+
+Request:
+
+```json
+{
+  "status": "DONE"
+}
+```
+
+---
+
+### Delete Task
+
+DELETE /api/tasks/{id}
+
+---
+
+## ⚠️ Notes
+
+* Uses native SQL with JdbcClient (no ORM)
+* Reactive service layer using Mono / Flux
+* Blocking DB calls are wrapped properly
+* Global exception handling implemented
+* Input validation applied (title length, not blank)
+
+---
+
+## 💡 Author
+
+* GitHub: https://github.com/ShirleyBailey/taskmanager
