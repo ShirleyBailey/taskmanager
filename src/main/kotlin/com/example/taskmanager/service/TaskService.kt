@@ -23,17 +23,10 @@ class TaskService(private val repository: TaskRepository) {
     }
 
     fun getById(id: Long): Mono<TaskResponse> {
-        return Mono.fromCallable {
-            repository.findById(id)
-        }
+        return Mono.justOrEmpty(repository.findById(id))
             .subscribeOn(Schedulers.boundedElastic())
-            .flatMap {
-                if (it == null) {
-                    Mono.error(TaskNotFoundException(id))
-                } else {
-                    Mono.just(it.toResponse())
-                }
-            }
+            .switchIfEmpty(Mono.error(TaskNotFoundException(id)))
+            .map { it.toResponse() }
     }
 
     fun delete(id: Long): Mono<Void> {
@@ -62,4 +55,6 @@ class TaskService(private val repository: TaskRepository) {
             }
     }
 }
+
+
 
