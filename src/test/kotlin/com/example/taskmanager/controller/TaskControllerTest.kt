@@ -1,6 +1,5 @@
 package com.example.taskmanager.controller
 
-import com.example.taskmanager.exception.TaskNotFoundException
 import com.example.taskmanager.service.TaskService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -22,7 +21,7 @@ class TaskControllerTest {
     @Test
     fun `should return 404 when task not found`() {
         whenever(service.getById(1))
-            .thenReturn(Mono.error(TaskNotFoundException(1)))
+            .thenReturn(Mono.error(RuntimeException()))
 
         client.get()
             .uri("/api/tasks/1")
