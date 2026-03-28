@@ -1,7 +1,7 @@
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '2.2.21'
 	id 'org.jetbrains.kotlin.plugin.spring' version '2.2.21'
-	id 'org.springframework.boot' version '4.0.5'
+	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -19,15 +19,15 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-	runtimeOnly("com.h2database:h2")
+	runtimeOnly 'com.h2database:h2'
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("io.projectreactor:reactor-test")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.mockito.kotlin:mockito-kotlin:5.1.0'
 }
 
 kotlin {
@@ -37,5 +37,9 @@ kotlin {
 }
 
 tasks.named('test') {
+	useJUnitPlatform()
+}
+
+test {
 	useJUnitPlatform()
 }
