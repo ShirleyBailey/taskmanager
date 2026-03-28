@@ -12,7 +12,7 @@ import reactor.test.StepVerifier
 import java.time.LocalDateTime
 import org.mockito.kotlin.whenever
 
-class TaskServiceTest {
+class TaskmanagerApplicationTests {
 
 	private val repository = mock<TaskRepository>()
 	private val service = TaskService(repository)
